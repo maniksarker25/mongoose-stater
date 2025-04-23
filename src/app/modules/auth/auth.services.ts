@@ -158,9 +158,7 @@ const changePasswordIntoDB = async (
       "Password and confirm password doesn't match",
     );
   }
-  const user = await User.findOne({
-    $or: [{ email: userData?.email }, { username: userData.username }],
-  });
+  const user = await User.findOne({ email: userData.email });
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
@@ -195,11 +193,9 @@ const changePasswordIntoDB = async (
 const refreshToken = async (token: string) => {
   const decoded = verifyToken(token, config.jwt_refresh_secret as string);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { username, email, iat } = decoded;
+  const { email } = decoded;
 
-  const user = await User.findOne({
-    $or: [{ email: email }, { username: username }],
-  });
+  const user = await User.findOne({ email: email });
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
